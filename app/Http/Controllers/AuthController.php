@@ -90,6 +90,22 @@ class AuthController extends Controller
             return response()->json(['error' => 'Logout failed'], 500);
         }
     }
+
+    public function showUser($id) {
+        try {
+            $user = User::findOrFail($id);
+
+            return response()->json($user);
+        } catch (ModelNotFoundException $e) {
+            Log::error('User not found', ['error' => $e->getMessage()]);
+
+            return response()->json(['error' => 'User not found'], 404);
+        } catch (\Exception $e) {
+            Log::error('An error occurred while fetching the User', ['error' => $e->getMessage()]);
+
+            return response()->json(['error' => 'An error occurred'], 500);
+        }
+    }
     
     
     

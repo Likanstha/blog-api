@@ -8,6 +8,7 @@ use App\Http\Controllers\PostController;
 // Authentication Routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/users/{id}', [AuthController::class, 'showUser'])->middleware('auth:sanctum');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 // Post Routes
