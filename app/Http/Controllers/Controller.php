@@ -15,8 +15,10 @@ use OpenAPI\Attributes as QA;
  *     version="1.0.0",
  *     description="API documentation for Blog API",
  *     @OA\Contact(
- *         email="likan.stha@gmail.com"
- *     )
+ *         name="Likan Shrestha",
+ *         email="likan.stha@gmail.com",
+ *         url="https://www.yourwebsite.com"
+ *     ),
  * )
  */
 abstract class Controller extends BaseController

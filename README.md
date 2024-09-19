@@ -40,3 +40,6 @@
 
 7.  **Run tests**
     php artisan test
+
+8.  **Swagger Documentation**
+    php artisan l5-swagger:generate

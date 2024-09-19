@@ -17,6 +17,29 @@ use Illuminate\Validation\ValidationException;
  */
 class PostController extends Controller
 {
+    /**
+     * @OA\Post(
+     *     path="/api/posts",
+     *     summary="Create a new post",
+     *     tags={"Posts"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"title", "body"},
+     *             @OA\Property(property="title", type="string", maxLength=255, example="New Post Title"),
+     *             @OA\Property(property="body", type="string", example="Post content goes here")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Post created successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/Post")
+     *     ),
+     *     @OA\Response(response=422, description="Validation error"),
+     *     @OA\Response(response=500, description="An error occurred")
+     * )
+     */
     public function create(Request $request) {
        
 
@@ -36,6 +59,36 @@ class PostController extends Controller
         }
     }
 
+    /**
+     * @OA\Patch(
+     *     path="/api/posts/{id}",
+     *     summary="Partially update an existing post",
+     *     tags={"Posts"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer"),
+     *         description="The post ID"
+     *     ),
+     *     @OA\RequestBody(
+     *         required=false,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="title", type="string", maxLength=255, example="Updated Post Title"),
+     *             @OA\Property(property="body", type="string", example="Updated post content")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Post updated successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/Post")
+     *     ),
+     *     @OA\Response(response=404, description="Post not found"),
+     *     @OA\Response(response=422, description="Validation error"),
+     *     @OA\Response(response=500, description="An error occurred")
+     * )
+     */
     public function update(Request $request, $id) {
         try {
             // Find the post or fail
@@ -66,6 +119,28 @@ class PostController extends Controller
         }
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/posts/{id}",
+     *     summary="Show details of a specific post",
+     *     tags={"Posts"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer"),
+     *         description="The post ID"
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Post details",
+     *         @OA\JsonContent(ref="#/components/schemas/Post")
+     *     ),
+     *     @OA\Response(response=404, description="Post not found"),
+     *     @OA\Response(response=500, description="An error occurred")
+     * )
+     */
     public function showPost($id) {
         try {
             $post = Post::findOrFail($id);
@@ -82,6 +157,27 @@ class PostController extends Controller
         }
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/posts",
+     *     summary="Get all posts with pagination",
+     *     tags={"Posts"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(type="integer"),
+     *         description="Page number for pagination"
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of posts",
+     *         @OA\JsonContent(ref="#/components/schemas/Post")
+     *     ),
+     *     @OA\Response(response=500, description="An error occurred")
+     * )
+     */
     public function showAllPosts() {
         try {
             $posts = Post::paginate(10);
@@ -94,6 +190,30 @@ class PostController extends Controller
         }
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/api/posts/{id}",
+     *     summary="Delete a post by ID",
+     *     tags={"Posts"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer"),
+     *         description="The post ID"
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Post deleted successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Post deleted successfully")
+     *         )
+     *     ),
+     *     @OA\Response(response=404, description="Post not found"),
+     *     @OA\Response(response=500, description="An error occurred")
+     * )
+     */
     public function delete($id) {
         try {
             $post = Post::findOrFail($id);
