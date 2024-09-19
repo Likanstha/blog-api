@@ -18,7 +18,10 @@
 2. **Install deependency**
    composer install
 
-3. **Configure Environment**  
+3. **Generate the Application Key**
+   php artisan key:generate
+
+4. **Configure Environment**  
    DB_CONNECTION=mysql
    DB_HOST=127.0.0.1
    DB_PORT=3306
@@ -26,20 +29,20 @@
    DB_USERNAME=your_database_user
    DB_PASSWORD=your_database_password
 
-4. **Run Migrations**
+5. **Run Migrations**
 
     php artisan migrate
 
 ## Start
 
-5.  **Start the Laravel Server**  
+6.  **Start the Laravel Server**  
     php artisan serve
 
-6.  **Start the Queue Worker**
+7.  **Start the Queue Worker**
     php artisan queue:work
 
-7.  **Run tests**
+8.  **Run tests**
     php artisan test
 
-8.  **Swagger Documentation**
+9.  **Swagger Documentation**
     php artisan l5-swagger:generate
