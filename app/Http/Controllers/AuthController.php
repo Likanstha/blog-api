@@ -10,8 +10,54 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
+
+/**
+ * /**
+ * @OA\Tag(
+ *     name="Authentication",
+ *     description="API Endpoints for authentication and users"
+ * )
+ * @OA\OpenApi(
+ *   security={{"bearerAuth": {}}}
+ * )
+ *
+ * @OA\SecurityScheme(
+ *   securityScheme="bearerAuth",
+ *   type="http",
+ *   scheme="bearer",
+ *   bearerFormat="JWT",
+ *   description="Enter the token obtained from the login API."
+ * )
+ */
+
 class AuthController extends Controller
 {
+    /**
+     * @OA\Post(
+     *     path="/api/register",
+     *     summary="Register a new user",
+     *     tags={"Auth"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name","email","password"},
+     *             @OA\Property(property="name", type="string", example="John Doe"),
+     *             @OA\Property(property="email", type="string", format="email", example="johndoe@example.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="password1234")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="User registered successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="user", type="object", ref="#/components/schemas/User")
+     *         )
+     *     ),
+     *     @OA\Response(response=409, description="Email already exists"),
+     *     @OA\Response(response=422, description="Validation failed"),
+     *     @OA\Response(response=500, description="Registration failed")
+     * )
+     */
     public function register(Request $request)
     {
         try {
@@ -47,6 +93,30 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/login",
+     *     summary="Login a user",
+     *     tags={"Auth"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email", "password"},
+     *             @OA\Property(property="email", type="string", format="email", example="johndoe@example.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="password1234")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Login successful",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="token", type="string", example="token123")
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=500, description="Login failed")
+     * )
+     */
     public function login(Request $request)
     {
         try {
@@ -76,7 +146,24 @@ class AuthController extends Controller
         }
     }
 
-    public function logout(Request $request)
+    /**
+     * @OA\Post(
+     *     path="/api/logout",
+     *     summary="Logout the authenticated user",
+     *     tags={"Auth"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Logout successful",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Logged out")
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Not authenticated"),
+     *     @OA\Response(response=500, description="Logout failed")
+     * )
+     */
+        public function logout(Request $request)
     {
         try {
             // Check if the user is authenticated
@@ -103,6 +190,29 @@ class AuthController extends Controller
         }
     }
 
+    /**
+    * @OA\Get(
+    *     path="/api/users/{id}",
+    *     summary="Get a user by ID",
+    *     tags={"User"},
+    *     security={{"bearerAuth":{}}},
+    *     @OA\Parameter(
+    *         name="id",
+    *         in="path",
+    *         required=true,
+    *         @OA\Schema(type="integer"),
+    *         description="The ID of the user to retrieve"
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="User retrieved successfully",
+    *         @OA\JsonContent(ref="#/components/schemas/User")
+    *     ),
+    *     @OA\Response(response=404, description="User not found"),
+    *     @OA\Response(response=401, description="Unauthorized"),
+    *     @OA\Response(response=500, description="An error occurred")
+    * )
+    */
     public function showUser($id) {
         try {
             $user = User::findOrFail($id);

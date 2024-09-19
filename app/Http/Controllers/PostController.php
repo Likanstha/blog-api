@@ -8,6 +8,13 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
+
+/**
+ * @OA\Tag(
+ *     name="Posts",
+ *     description="API Endpoints for managing posts"
+ * )
+ */
 class PostController extends Controller
 {
     public function create(Request $request) {
