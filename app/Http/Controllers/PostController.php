@@ -60,13 +60,47 @@ class PostController extends Controller
     }
 
     public function showPost($id) {
-        return Post::findOrFail($id);
+        try {
+            $post = Post::findOrFail($id);
+
+            return response()->json($post);
+        } catch (ModelNotFoundException $e) {
+            Log::error('Post not found', ['error' => $e->getMessage()]);
+
+            return response()->json(['error' => 'Post not found'], 404);
+        } catch (\Exception $e) {
+            Log::error('An error occurred while fetching the post', ['error' => $e->getMessage()]);
+
+            return response()->json(['error' => 'An error occurred'], 500);
+        }
     }
 
     public function showAllPosts() {
-        return Post::paginate(2);
+        try {
+            $posts = Post::paginate(10);
+
+            return response()->json($posts);
+        } catch (\Exception $e) {
+            Log::error('An error occurred while fetching posts', ['error' => $e->getMessage()]);
+
+            return response()->json(['error' => 'An error occurred'], 500);
+        }
     }
 
+    public function delete($id) {
+        try {
+            $post = Post::findOrFail($id);
+            $post->delete();
+            return response()->json(['message' => 'Post deleted successfully'],200);
+        } catch (ModelNotFoundException $e) {
+            Log::error('Post not found', ['error' => $e->getMessage()]);
 
+            return response()->json(['error' => 'Post not found'], 404);
+        } catch (\Exception $e) {
+            Log::error('An error occurred while deleting the post', ['error' => $e->getMessage()]);
+
+            return response()->json(['error' => 'An error occurred'], 500);
+        }
+    }
 
 }
