@@ -32,8 +32,15 @@ class AuthController extends Controller
 
             return response()->json(['user' => $user], 201);
         } catch (ValidationException $e) {
-            Log::error('Validation failed during registration', ['exception' => $e->getMessage()]);
-            return response()->json(['error' => 'Validation failed'], 422);
+                $errors = $e->errors();
+                Log::error('Validation failed during registration', ['errors' => $errors]);
+                
+                if (isset($errors['email']) && in_array('The email has already been taken.', $errors['email'])) {
+                    return response()->json(['error' => 'Email already exists'], 409);
+                }
+
+                return response()->json(['error' => 'Validation failed', 'messages' => $errors], 422);
+   
         } catch (\Exception $e) {
             Log::error('Registration failed', ['exception' => $e->getMessage()]);
             return response()->json(['error' => 'Registration failed'], 500);
@@ -63,6 +70,7 @@ class AuthController extends Controller
                 return response()->json(['error' => 'Unauthorized'], 401);
             }
         } catch (\Exception $e) {
+            $errors = $e->errors();
             Log::error('Login failed', ['exception' => $e->getMessage()]);
             return response()->json(['error' => 'Login failed'], 500);
         }
