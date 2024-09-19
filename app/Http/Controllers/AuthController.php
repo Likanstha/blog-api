@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User; 
 use Illuminate\Http\Request;
+use App\Jobs\SendWelcomeEmail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -25,6 +26,9 @@ class AuthController extends Controller
                 'email' => $validated['email'],
                 'password' => Hash::make($validated['password']),
             ]);
+
+             // Dispatch the welcome email job
+            SendWelcomeEmail::dispatch($user);
 
             return response()->json(['user' => $user], 201);
         } catch (ValidationException $e) {
