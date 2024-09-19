@@ -58,4 +58,15 @@ class PostController extends Controller
             return response()->json(['error' => 'An error occurred'], 500);
         }
     }
+
+    public function showPost($id) {
+        return Post::findOrFail($id);
+    }
+
+    public function showAllPosts() {
+        return Post::paginate(2);
+    }
+
+
+
 }

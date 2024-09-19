@@ -14,5 +14,8 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/posts', [PostController::class, 'create']);
     Route::patch('/posts/{id}', [PostController::class, 'update']);
+    Route::get('/posts/{id}', [PostController::class, 'showPost']);
+    Route::get('/posts', [PostController::class, 'showAllPosts']);
+
 
 });
