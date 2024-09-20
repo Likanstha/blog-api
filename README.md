@@ -46,3 +46,6 @@
 
 9.  **Swagger Documentation**
     php artisan l5-swagger:generate
+
+10.  **To view the Swagger Documentation**
+    http://127.0.0.1:8000/api/documentation
